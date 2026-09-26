@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperMinecraft - CurseForge Style Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://tailwindcss.com"></script>
+    <style>
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeInUp 1s ease-out forwards; }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.5s; }
+        .delay-3 { animation-delay: 0.8s; }
+        .delay-button { animation-delay: 1.2s; }
+
+        /* Pure CSS Minecraft Dirt Grid Texture Pattern */
+        .minecraft-pure-bg {
+            background-color: #3b2716;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.4) 100%, transparent 100%),
+                linear-gradient(90deg, #2c1d11 25%, transparent 25%),
+                linear-gradient(#2c1d11 25%, transparent 25%),
+                linear-gradient(90deg, #4a311c 50%, transparent 50%),
+                linear-gradient(#4a311c 50%, transparent 50%);
+            background-size: 100% 100%, 64px 64px, 64px 64px, 32px 32px, 32px 32px;
+            background-attachment: fixed;
+        }
+
+        /* Ambient layout dark fog overlay */
+        .dark-overlay {
+            background: linear-gradient(to bottom, rgba(10, 6, 4, 0.88), rgba(2, 2, 2, 0.94));
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="minecraft-pure-bg text-slate-100 min-h-screen font-sans selection:bg-orange-500 selection:text-slate-950 flex flex-col justify-between">
+
+    <!-- OVERLAY CONTAINER FOR SHARP CONTRAST -->
+    <div class="dark-overlay flex flex-col justify-between flex-1 w-full">
+
+        <!-- STEP 1: ANIMATED SPLASH SCREEN (INTRO PAGE) -->
+        <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 px-4 transition-all duration-700">
+            <div class="text-center space-y-6">
+                <!-- Brand Horse Logo Holder -->
+                <div class="h-24 w-24 mx-auto mb-2 bg-orange-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/20 p-2 opacity-0 animate-fade-in">
+                    <div class="w-full h-full bg-white [mask-image:url('https://rawpixel.com')] [mask-size:contain] [mask-repeat:no-repeat] [mask-position:center]"></div>
+                </div>
+                
+                <h2 class="text-xs font-mono uppercase tracking-[0.3em] text-orange-500 opacity-0 animate-fade-in">Created By</h2>
+                <h1 class="text-4xl md:text-6xl font-black tracking-tight flex flex-col md:flex-row gap-4 items-center justify-center">
+                    <span class="opacity-0 animate-fade-in delay-1 bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">Nightbrone</span>
+                    <span class="text-slate-700 hidden md:inline">•</span>
+                    <span class="opacity-0 animate-fade-in delay-2 bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Didula48</span>
+                    <span class="text-slate-700 hidden md:inline">•</span>
+                    <span class="opacity-0 animate-fade-in delay-3 bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">voidstriker</span>
+                </h1>
+                <p class="text-sm text-slate-400 max-w-sm mx-auto opacity-0 animate-fade-in delay-3">Next-generation CurseForge inspired database hub for Minecraft.</p>
+                <div class="pt-6 opacity-0 animate-fade-in delay-button">
+                    <button onclick="enterDashboard()" class="px-8 py-4 bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-orange-500/20 transform hover:-translate-y-0.5 transition active:translate-y-0">
+                        Get Started →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN PLATFORM INTERFACE -->
+        <div id="app-content" class="hidden min-h-screen flex flex-col w-full">
+            <!-- NAVIGATION BAR -->
+            <nav class="border-b border-slate-800 bg-[#151515]/95 backdrop-blur-md px-6 py-4 sticky top-0 z-40 flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-3">
+                        <!-- Navbar Horse Logo -->
+                        <div class="h-9 w-9 bg-orange-500 rounded-lg flex items-center justify-center shadow-md shadow-orange-500/20 p-1.5">
+                            <div class="w-full h-full bg-white [mask-image:url('https://rawpixel.com')] [mask-size:contain] [mask-repeat:no-repeat] [mask-position:center]"></div>
+                        </div>
+                        <span class="font-bold text-xl tracking-tight text-white">SuperMinecraft</span>
+                    </div>
+                    <!-- Structural Creators Panel Info -->
+                    <div class="hidden lg:flex items-center gap-2 text-xs border-l border-slate-700 pl-6 text-slate-400 font-mono">
+                        <span>By:</span>
+                        <span class="text-purple-400 font-bold">Nightbrone</span> • 
+                        <span class="text-emerald-400 font-bold">Didula48</span> • 
+                        <span class="text-amber-400 font-bold">voidstriker</span>
+                    </div>
+                </div>
+                
+                <!-- LIVE REAL-TIME SEARCH BAR -->
+                <div class="hidden md:flex flex-1 max-w-md mx-8">
+                    <input type="text" id="search-bar" oninput="filterProjects()" placeholder="Search mods, resource packs, shaders..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-orange-500 text-slate-100 placeholder-slate-500">
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <button onclick="openUploadModal()" class="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold rounded-lg transition shadow-md">
+                        <span class="text-lg font-black">+</span> Create Project
+                    </button>
+                </div>
+            </nav>
+
+            <!-- CONTAINER MAIN GRID -->
+            <main class="flex-1 max-w-7xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- FILTER MENU PANEL -->
+                <aside class="space-y-4 lg:col-span-1">
+                    <div class="bg-[#151515]/90 border border-slate-800 p-5 rounded-xl space-y-4 shadow-xl">
+                        <h3 class="font-bold text-xs uppercase tracking-wider text-orange-500">Browse Categories</h3>
+                        <div class="space-y-2 flex flex-col">
+                            <button onclick="setCategoryFilter('All')" id="cat-All" class="text-left text-sm py-1.5 px-3 rounded bg-orange-500/10 text-orange-400 font-semibold transition">📁 All Categories</button>
+                            <button onclick="setCategoryFilter('Mod')" id="cat-Mod" class="text-left text-sm py-1.5 px-3 rounded text-slate-400 hover:bg-slate-900 transition">📦 Mods</button>
+                            <button onclick="setCategoryFilter('Resource Pack')" id="cat-Resource Pack" class="text-left text-sm py-1.5 px-3 rounded text-slate-400 hover:bg-slate-900 transition">🎨 Resource Packs</button>
+                            <button onclick="setCategoryFilter('Shader')" id="cat-Shader" class="text-left text-sm py-1.5 px-3 rounded text-slate-400 hover:bg-slate-900 transition">✨ Shaders</button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- DYNAMIC RENDERING RESOURCE LIST -->
+                <section class="lg:col-span-3 space-y-4">
+                    <!-- SORT & STATUS META PANEL -->
+                    <div class="bg-[#151515]/90 border border-slate-800 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-slate-400">Showing:</span>
+                            <span id="project-count" class="text-sm font-bold text-white">0 Projects</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400 uppercase font-mono">Sort By:</span>
+                            <select id="sort-filter" onchange="filterProjects()" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-slate-300 focus:outline-none focus:border-orange-500">
+                                <option value="downloads">Most Downloads</option>
+                                <option value="name">Name (A-Z)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- DISPLAY CARD CONTAINER LOOP -->
+                    <div id="cards-container" class="space-y-4"></div>
+                </section>
+            </main>
+
+            <!-- FOOTER CONTAINER -->
+            <footer class="border-t border-slate-800 bg-[#151515]/95 text-center py-4 text-xs text-slate-500">
+                <p>© 2026 SuperMinecraft. Platform developed by <span class="text-slate-300 font-medium">Nightbrone, Didula48 & voidstriker</span>.</p>
+            </footer>
+        </div>
+
+    </div>
+
+    <!-- SUBMISSION CREATION FORM OVERLAY MODAL -->
